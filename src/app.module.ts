@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,9 +22,13 @@ import { AppService } from './app.service';
       synchronize: true,
       retryAttempts: 5,
       retryDelay: 1000,
+      entities: [__dirname + '/**/*.entity.{js,ts}'],
+      ssl: true,
     }),
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
 })
 export class AppModule {}
