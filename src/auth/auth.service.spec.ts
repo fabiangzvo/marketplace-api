@@ -8,7 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { User } from '../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity';
 import {
   UnauthorizedException,
   ConflictException,
@@ -28,6 +28,8 @@ const mockUser: User = {
   name: 'Test User',
   createdAt: new Date(),
   updatedAt: new Date(),
+  role: UserRole.SELLER,
+  products: [],
 };
 
 const credentials: LoginDto = {
@@ -122,6 +124,8 @@ describe('AuthService - Unit Tests', () => {
         name: mockUser.name,
         createdAt: mockUser.createdAt,
         updatedAt: mockUser.updatedAt,
+        role: mockUser.role,
+        products: mockUser.products,
       });
     });
 
@@ -197,6 +201,8 @@ describe('AuthService - Unit Tests', () => {
         name: mockUser.name,
         createdAt: mockUser.createdAt,
         updatedAt: mockUser.updatedAt,
+        role: mockUser.role,
+        products: mockUser.products,
       });
     });
 

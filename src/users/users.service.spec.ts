@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -51,12 +51,13 @@ describe('UsersService - Unit Tests', () => {
 
   describe('findOne', () => {
     it('should return an user', async () => {
-      const user: Omit<User, 'password'> = {
+      const user: Omit<User, 'password' | 'products'> = {
         id: 1,
         name: 'John',
         email: 'john@test.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: UserRole.SELLER,
       };
 
       repository.findOne.mockResolvedValue(user);
@@ -77,13 +78,14 @@ describe('UsersService - Unit Tests', () => {
 
   describe('findByEmail', () => {
     it('should return a user by email', async () => {
-      const user: User = {
+      const user: Omit<User, 'products'> = {
         id: 1,
         name: 'John',
         email: 'john@test.com',
         password: '123',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: UserRole.SELLER,
       };
 
       repository.findOne.mockResolvedValue(user);
@@ -151,19 +153,21 @@ describe('UsersService - Unit Tests', () => {
     it('should update and return the user', async () => {
       const userId = 1;
       const updateData: UpdateUserDto = { name: 'John Updated' };
-      const initialUser: Omit<User, 'password'> = {
+      const initialUser: Omit<User, 'password' | 'products'> = {
         id: 1,
         name: 'John Doe',
         email: 'john@test.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: UserRole.SELLER,
       };
-      const updatedUser: Omit<User, 'password'> = {
+      const updatedUser: Omit<User, 'password' | 'products'> = {
         id: 1,
         name: 'John Updated',
         email: 'john@test.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: UserRole.SELLER,
       };
 
       repository.findOne
@@ -183,15 +187,16 @@ describe('UsersService - Unit Tests', () => {
         name: 'John Updated',
         email: 'john@doe.com',
       };
-      const initialUser: Omit<User, 'password'> = {
+      const initialUser: Omit<User, 'password' | 'products'> = {
         id: 1,
         name: 'John Doe',
         email: 'john@test.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: UserRole.SELLER,
       };
 
-      const updatedUser: Omit<User, 'password'> = {
+      const updatedUser: Omit<User, 'password' | 'products'> = {
         ...initialUser,
         ...updateData,
       };
@@ -220,6 +225,8 @@ describe('UsersService - Unit Tests', () => {
         email: 'john@test.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: UserRole.SELLER,
+        products: [],
       };
 
       const existingUser: Omit<User, 'password'> = {
@@ -228,6 +235,8 @@ describe('UsersService - Unit Tests', () => {
         email: 'beto@test.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: UserRole.SELLER,
+        products: [],
       };
 
       repository.findOne
