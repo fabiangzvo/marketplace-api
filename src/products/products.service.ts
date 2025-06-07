@@ -112,4 +112,25 @@ export class ProductsService {
       },
     };
   }
+
+  async remove(id: string, user: User): Promise<void> {
+    if (user.role !== UserRole.SELLER) {
+      throw new ForbiddenException('only sellers can delete products');
+    }
+
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['seller'],
+    });
+
+    if (!product) {
+      throw new BadRequestException('product not found');
+    }
+
+    if (product.seller.id !== user.id) {
+      throw new ForbiddenException('you can only delete your own products');
+    }
+
+    await this.productRepository.delete(id);
+  }
 }

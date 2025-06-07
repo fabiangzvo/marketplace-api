@@ -7,6 +7,8 @@ import {
   HttpStatus,
   UseGuards,
   Query,
+  Delete,
+  Param,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
@@ -33,5 +35,12 @@ export class ProductsController {
   @UseGuards(OptionalJwtAuthGuard)
   findAll(@Query() queryDto: QueryProductDto, @GetUser() user?: User) {
     return this.productsService.findAll(queryDto, user);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  remove(@GetUser() user: User, @Param('id') id: string) {
+    return this.productsService.remove(id, user);
   }
 }
