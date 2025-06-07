@@ -45,6 +45,7 @@ export class AuthService {
       email: validateUser.email,
       sub: validateUser.id,
       name: validateUser.name,
+      role: validateUser.role,
     };
 
     return {
@@ -67,6 +68,7 @@ export class AuthService {
         email: newUser.email,
         sub: newUser.id,
         name: newUser.name,
+        role: newUser.role,
       };
 
       return {
