@@ -31,7 +31,7 @@ export class User {
   @Column({ nullable: true })
   name: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENT })
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.SELLER })
   role: UserRole;
 
   @CreateDateColumn()

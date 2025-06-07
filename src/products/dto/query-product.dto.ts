@@ -8,7 +8,6 @@ import {
   Min,
   Max,
   IsIn,
-  IsBoolean,
 } from 'class-validator';
 
 export class QueryProductDto {
@@ -53,11 +52,7 @@ export class QueryProductDto {
   order?: 'ASC' | 'DESC' = 'DESC';
 
   @IsOptional()
-  @Transform(({ value }: { value: string }) => {
-    if (value === 'true') return true;
-    if (value === 'false') return false;
-    return value;
-  })
-  @IsBoolean()
-  isActive?: boolean;
+  @IsNumber()
+  @Type(() => Number)
+  userId?: number;
 }
