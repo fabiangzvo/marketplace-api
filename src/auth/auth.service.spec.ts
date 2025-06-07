@@ -165,6 +165,7 @@ describe('AuthService - Unit Tests', () => {
           email: 'test@example.com',
           sub: 1,
           name: 'Test User',
+          role: 'seller',
         },
       });
     });
