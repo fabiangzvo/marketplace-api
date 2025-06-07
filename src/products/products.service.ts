@@ -56,17 +56,17 @@ export class ProductsService {
 
     if (search)
       queryBuilder.andWhere(
-        '(LOWER(product.nombre) LIKE LOWER(:search) OR LOWER(product.sku) LIKE LOWER(:search))',
+        '(LOWER(product.name) LIKE LOWER(:search) OR LOWER(product.sku) LIKE LOWER(:search))',
         { search: `%${search}%` },
       );
 
     if (minPrice !== undefined)
-      queryBuilder.andWhere('product.precio >= :minPrice', { minPrice });
+      queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
 
     if (maxPrice !== undefined)
-      queryBuilder.andWhere('product.precio <= :maxPrice', { maxPrice });
+      queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
 
-    if (user && user.role !== UserRole.SELLER)
+    if (user && user.role === UserRole.SELLER)
       queryBuilder.andWhere('product.seller = :userId', { userId: user.id });
 
     queryBuilder.orderBy(`product.${sortBy}`, order);
