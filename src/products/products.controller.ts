@@ -37,6 +37,12 @@ export class ProductsController {
     return this.productsService.findAll(queryDto, user);
   }
 
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  findOne(@Param('id') id: string) {
+    return this.productsService.findOne(id);
+  }
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)

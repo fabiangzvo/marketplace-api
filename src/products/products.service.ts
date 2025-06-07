@@ -2,9 +2,11 @@ import {
   Injectable,
   BadRequestException,
   ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { plainToClass } from 'class-transformer';
 
 import { CreateProductDto } from './dto/create-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
@@ -111,6 +113,20 @@ export class ProductsService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async findOne(id: string): Promise<Product> {
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.seller', 'seller');
+
+    queryBuilder.where('product.id = :id', { id });
+
+    const product = await queryBuilder.getOne();
+
+    if (!product) throw new NotFoundException('product not found');
+
+    return plainToClass(Product, product);
   }
 
   async remove(id: string, user: User): Promise<void> {
