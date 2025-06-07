@@ -10,6 +10,7 @@ import { plainToClass } from 'class-transformer';
 
 import { CreateProductDto } from './dto/create-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { User, UserRole } from '../users/entities/user.entity';
 
@@ -130,23 +131,45 @@ export class ProductsService {
   }
 
   async remove(id: string, user: User): Promise<void> {
-    if (user.role !== UserRole.SELLER) {
+    if (user.role !== UserRole.SELLER)
       throw new ForbiddenException('only sellers can delete products');
-    }
 
     const product = await this.productRepository.findOne({
       where: { id },
       relations: ['seller'],
     });
 
-    if (!product) {
-      throw new BadRequestException('product not found');
-    }
+    if (!product) throw new BadRequestException('product not found');
 
-    if (product.seller.id !== user.id) {
+    if (product.seller.id !== user.id)
       throw new ForbiddenException('you can only delete your own products');
-    }
 
     await this.productRepository.delete(id);
+  }
+
+  async update(
+    id: string,
+    user: User,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
+    if (user.role !== UserRole.SELLER)
+      throw new ForbiddenException('only sellers can update products');
+
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['seller'],
+    });
+
+    if (!product) throw new NotFoundException('product not found');
+
+    if (product.seller.id !== user.id)
+      throw new ForbiddenException('you can only update your own products');
+
+    const updatedProduct = this.productRepository.create({
+      ...product,
+      ...updateProductDto,
+    });
+
+    return this.productRepository.save(updatedProduct);
   }
 }
