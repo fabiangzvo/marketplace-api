@@ -72,6 +72,14 @@ export class ProductsService {
     if (user && user.role === UserRole.SELLER)
       queryBuilder.andWhere('product.seller = :userId', { userId: user.id });
 
+    if (user && user.role === UserRole.ADMIN)
+      queryBuilder.orWhere(
+        '(LOWER(seller.name) LIKE LOWER(:search) OR LOWER(seller.email) LIKE LOWER(:search))',
+        {
+          search: `%${search}%`,
+        },
+      );
+
     queryBuilder.orderBy(`product.${sortBy}`, order);
 
     const skip = (page - 1) * limit;
