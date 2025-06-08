@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ForbiddenException,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -32,7 +33,7 @@ export class ProductsService {
       where: { sku: createProductDto.sku.toUpperCase() },
     });
 
-    if (existingSku) throw new BadRequestException('El SKU ya existe');
+    if (existingSku) throw new ConflictException('El SKU ya existe');
 
     const product = this.productRepository.create({
       ...createProductDto,
